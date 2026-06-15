@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TextilStore - Tienda de Textiles</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAFAFA;
+      --text: #1A1A1A;
+      --accent: #2D2D2D;
+      --secondary: #F5F5F5;
+      --muted: #888;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+    a { text-decoration: none; color: inherit; }
+    
+    header { position: relative; background: rgba(250,250,250,0.98); backdrop-filter: blur(10px); border-bottom: 1px solid #eee; }
+    .header-inner { max-width: 1400px; margin: 0 auto; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 24px; font-weight: 700; }
+    .logo span { color: var(--muted); }
+    nav { display: flex; gap: 30px; }
+    nav a { font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    nav a:hover { color: var(--muted); }
+    .cart-btn { background: none; border: none; cursor: pointer; position: relative; }
+    .cart-count { position: absolute; top: -5px; right: -5px; background: var(--accent); color: white; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    main { padding-top: 40px; }
+    
+    .hero { position: relative; height: 100vh; overflow: hidden; background: #1A1A1A; }
+    .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse at 20% 50%, rgba(184,134,11,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 50%, rgba(212,175,55,0.05) 0%, transparent 50%); z-index: 0; }
+    .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(26,26,26,0.95) 0%, rgba(26,26,26,0.7) 60%, transparent 100%); z-index: 1; }
+    .carousel { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; z-index: 2; }
+    .slide.active { opacity: 1; }
+    .slide:nth-child(1) { background: linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%); }
+    .slide:nth-child(2) { background: linear-gradient(135deg, #2D2D2D 0%, #1A3A5C 100%); }
+    .slide:nth-child(3) { background: linear-gradient(135deg, #4A3728 0%, #8B4513 100%); }
+    .hero-inner { max-width: 1400px; margin: 0 auto; padding: 0 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; width: 100%; }
+    .hero-content { color: white; position: relative; z-index: 10; }
+    .hero-content h1 { font-size: clamp(40px, 5vw, 70px); font-weight: 700; margin-bottom: 20px; line-height: 1.1; opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s; }
+    .slide.active .hero-content h1 { opacity: 1; transform: translateY(0); }
+    .hero-content h1 span { background: linear-gradient(135deg, #B8860B, #D4AF37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-content p { font-size: 18px; color: rgba(255,255,255,0.7); margin-bottom: 30px; line-height: 1.8; max-width: 500px; opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s; }
+    .slide.active .hero-content p { opacity: 1; transform: translateY(0); }
+    .hero-content .btn { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s; }
+    .slide.active .hero-content .btn { opacity: 1; transform: translateY(0); }
+    .btn { display: inline-block; padding: 16px 36px; border-radius: 8px; font-weight: 600; font-size: 15px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .btn-primary { background: linear-gradient(135deg, #B8860B 0%, #D4AF37 100%); color: white; box-shadow: 0 8px 25px rgba(184,134,11,0.4); }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(184,134,11,0.5); }
+    .btn-secondary { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: white; }
+    .hero-img { position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 40px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1); opacity: 0; transform: scale(0.9) translateX(50px); transition: all 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s; }
+    .slide.active .hero-img { opacity: 1; transform: scale(1) translateX(0); }
+    .hero-img img { width: 100%; height: 500px; object-fit: cover; transition: transform 0.6s ease; }
+    .hero-img:hover img { transform: scale(1.05); }
+    
+    .carousel-nav { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 20; }
+    .carousel-dot { width: 40px; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.2); cursor: pointer; transition: all 0.4s ease; border: none; }
+    .carousel-dot.active { background: linear-gradient(90deg, #B8860B, #D4AF37); transform: scaleX(1.2); }
+    .carousel-dot:hover { background: rgba(255,255,255,0.4); }
+    .carousel-arrows { position: absolute; top: 50%; transform: translateY(-50%); width: 100%; display: flex; justify-content: space-between; padding: 0 30px; z-index: 20; pointer-events: none; }
+    .carousel-arrow { width: 60px; height: 60px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: auto; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); color: white; font-size: 24px; backdrop-filter: blur(10px); }
+    .carousel-arrow:hover { background: rgba(184,134,11,0.3); border-color: #B8860B; transform: scale(1.1); }
+
+    .section { padding: 100px 40px; max-width: 1400px; margin: 0 auto; }
+    .section-title { text-align: center; margin-bottom: 50px; }
+    .section-title h2 { font-size: 40px; margin-bottom: 10px; opacity: 0; transform: translateY(30px); animation: fadeUp 0.6s ease forwards; }
+    .section-title p { color: var(--muted); opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s ease 0.2s forwards; }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+    .product-card { background: white; border-radius: 16px; overflow: hidden; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; opacity: 0; transform: translateY(40px); border: 1px solid transparent; }
+    .product-card.visible { opacity: 1; transform: translateY(0); }
+    .product-card:hover { transform: translateY(-12px); box-shadow: 0 25px 50px rgba(0,0,0,0.15); border-color: rgba(184,134,11,0.3); }
+    .product-card:hover img { transform: scale(1.1); }
+    .product-card img { width: 100%; height: 300px; object-fit: cover; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+    .product-info { padding: 24px; }
+    .product-cat { font-size: 11px; color: #B8860B; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px; font-weight: 600; }
+    .product-name { font-size: 16px; font-weight: 600; margin-bottom: 10px; transition: color 0.2s; color: #1A1A1A; }
+    .product-card:hover .product-name { color: #B8860B; }
+    .product-price { font-size: 20px; font-weight: 700; color: #1A1A1A; }
+    .product-price-old { font-size: 14px; color: #888; text-decoration: line-through; margin-left: 8px; }
+    .discount { position: absolute; top: 16px; left: 16px; background: linear-gradient(135deg, #E53935, #C62828); color: white; padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; animation: pulse 2s infinite; box-shadow: 0 4px 15px rgba(229,57,53,0.4); }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+    .add-btn-overlay { position: absolute; bottom: 20px; right: 20px; opacity: 0; transform: translateY(10px); transition: all 0.3s; }
+    .product-card:hover .add-btn-overlay { opacity: 1; transform: translateY(0); }
+
+    
+
+    footer { background: #1A1A1A; color: white; padding: 80px 40px 40px; margin-top: 80px; }
+    .footer-inner { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 60px; }
+    .footer-col { opacity: 0; transform: translateY(30px); transition: all 0.6s ease; }
+    .footer-col.visible { opacity: 1; transform: translateY(0); }
+    .footer-col:hover { transform: translateY(-5px); }
+    .footer-col h4 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px; color: white; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 12px; color: #888; font-size: 14px; transition: all 0.2s; }
+    .footer-col a { color: #888; transition: color 0.2s; display: inline-block; position: relative; }
+    .footer-col a::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: white; transition: width 0.3s; }
+    .footer-col a:hover { color: white; }
+    .footer-col a:hover::after { width: 100%; }
+    .footer-col li:hover { color: white; transform: translateX(5px); }
+    .footer-bottom { border-top: 1px solid #333; margin-top: 60px; padding-top: 30px; text-align: center; color: #666; font-size: 14px; }
+
+    .info-section { background: var(--secondary); padding: 60px 40px; margin-top: 80px; }
+    .info-grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: center; }
+    .info-card { padding: 30px; background: white; border-radius: 12px; transition: all 0.3s; opacity: 0; transform: translateY(30px); }
+    .info-card.visible { opacity: 1; transform: translateY(0); }
+    .info-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+    .info-icon { font-size: 40px; margin-bottom: 20px; display: block; animation: float 3s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .info-title { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+    .info-desc { color: var(--muted); font-size: 14px; }
+
+    .scroll-reveal { opacity: 0; transform: translateY(40px); transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+    .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .cart-sidebar { position: fixed; top: 0; right: -420px; width: 420px; height: 100%; background: white; z-index: 201; box-shadow: -10px 0 40px rgba(0,0,0,0.1); transition: right 0.3s; display: flex; flex-direction: column; }
+    .cart-sidebar.open { right: 0; }
+    .cart-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+    .cart-overlay.open { opacity: 1; pointer-events: auto; }
+    .cart-header { padding: 24px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .cart-items { flex: 1; overflow-y: auto; padding: 24px; }
+    .cart-item { display: flex; gap: 16px; padding: 16px; background: var(--secondary); border-radius: 8px; margin-bottom: 16px; }
+    .cart-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 4px; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .cart-item-options { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .cart-item-controls { display: flex; align-items: center; gap: 8px; }
+    .qty-btn { width: 24px; height: 24px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; }
+    .cart-footer { padding: 24px; border-top: 1px solid #eee; background: var(--secondary); }
+    .cart-total { display: flex; justify-content: space-between; margin-bottom: 16px; }
+    .cart-total span { font-size: 14px; color: var(--muted); }
+    .cart-total strong { font-size: 20px; }
+
+    .toast { position: fixed; bottom: 24px; right: 24px; background: var(--accent); color: white; padding: 16px 24px; border-radius: 8px; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 300; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 150; display: none; align-items: center; justify-content: center; }
+    .modal.open { display: flex; }
+    .modal-content { background: white; border-radius: 12px; width: 90%; max-width: 1000px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { padding: 24px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .modal-body { padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .modal-img img { width: 100%; height: 400px; object-fit: cover; border-radius: 8px; }
+    .modal-details h1 { font-size: 32px; margin-bottom: 16px; }
+    .modal-price { font-size: 28px; font-weight: 700; margin-bottom: 20px; }
+    .modal-desc { color: #666; line-height: 1.8; margin-bottom: 24px; }
+    .color-options, .size-options { margin-bottom: 20px; }
+    .color-options label, .size-options label { display: block; font-weight: 600; margin-bottom: 12px; }
+    .color-btns, .size-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+    .color-btn { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #eee; cursor: pointer; }
+    .color-btn.selected { border-color: var(--accent); transform: scale(1.1); }
+    .size-btn { min-width: 50px; padding: 10px 16px; border: 1px solid #eee; background: white; border-radius: 4px; cursor: pointer; }
+    .size-btn.selected { background: var(--accent); color: white; border-color: var(--accent); }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .animate { animation: fadeIn 0.5s ease-out forwards; }
+    .stagger-1 { animation-delay: 0.1s; } .stagger-2 { animation-delay: 0.2s; } .stagger-3 { animation-delay: 0.3s; } .stagger-4 { animation-delay: 0.4s; }
+
+    .marquee-bar { background: linear-gradient(90deg, #1A1A1A 0%, #2D2D2D 50%, #1A1A1A 100%); color: white; padding: 8px 0; overflow: hidden; position: relative; }
+    .marquee-track { display: flex; width: fit-content; }
+    .marquee-content { display: flex; align-items: center; gap: 60px; white-space: nowrap; animation: marquee 20s linear infinite; }
+    .marquee-content span { color: #888; }
+    .marquee-item { display: inline-flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 500; }
+    .marquee-icon { font-size: 14px; }
+    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  </style>
+</head>
+<body>
+  <div class="marquee-bar">
+    <div class="marquee-track">
+      <div class="marquee-content">
+        <div class="marquee-item"><span class="marquee-icon">🚚</span>ENVÍOS A TODO EL PAÍS</div>
+        <div class="marquee-item"><span class="marquee-icon">🎉</span>ENVÍOS GRADES DESDE $60.000</div>
+        <div class="marquee-item"><span class="marquee-icon">💳</span>3 CUOTAS SIN INTERÉS</div>
+        <div class="marquee-item"><span class="marquee-icon">📞</span>ATENCIÓN: LUN-VIE 8:30-13HS</div>
+        <div class="marquee-item"><span class="marquee-icon">🛒</span>MÁS DE 300 ARTÍCULOS EN STOCK</div>
+        <div class="marquee-item"><span class="marquee-icon">📦</span>MAYORISTA DE TELAS EN ROLLO</div>
+        <div class="marquee-item"><span class="marquee-icon">🚚</span>ENVÍOS A TODO EL PAÍS</div>
+        <div class="marquee-item"><span class="marquee-icon">🎉</span>ENVÍOS GRADES DESDE $60.000</div>
+        <div class="marquee-item"><span class="marquee-icon">💳</span>3 CUOTAS SIN INTERÉS</div>
+        <div class="marquee-item"><span class="marquee-icon">📞</span>ATENCIÓN: LUN-VIE 8:30-13HS</div>
+        <div class="marquee-item"><span class="marquee-icon">🛒</span>MÁS DE 300 ARTÍCULOS EN STOCK</div>
+        <div class="marquee-item"><span class="marquee-icon">📦</span>MAYORISTA DE TELAS EN ROLLO</div>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="header-inner">
+      <a href="#" class="logo">TEXTIL<span>STORE</span></a>
+      <nav>
+        <a href="#productos">Productos</a>
+        <a href="#categorias">Categorías</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+      <button class="cart-btn" onclick="toggleCart()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-overlay"></div>
+      
+      <div class="carousel">
+        <div class="slide active">
+          <div class="hero-inner">
+            <div class="hero-content">
+              <p style="text-transform: uppercase; letter-spacing: 0.2em; font-size: 14px; margin-bottom: 16px; color: #aaa;">Nueva Colección 2026</p>
+              <h1>Encuentra tu <span>estilo</span> perfecto</h1>
+              <p>Explora nuestra colección de textiles premium, calzado elegante y prendas de moda.</p>
+              <a href="#productos" class="btn btn-primary">Ver Catálogo</a>
+            </div>
+            <div class="hero-img">
+              <img src="https://acdn-us.mitiendanube.com/stores/005/133/153/products/hero1-e7f67c14c6824a43bd17777327393130-480-0.webp" alt="Hero">
+            </div>
+          </div>
+        </div>
+        <div class="slide">
+          <div class="hero-inner">
+            <div class="hero-content">
+              <p style="text-transform: uppercase; letter-spacing: 0.2em; font-size: 14px; margin-bottom: 16px; color: #aaa;">Telas Exclusivas</p>
+              <h1>Calidad <span>Premium</span></h1>
+              <p>Las mejores telas de punto y planas para tus proyectos de confección.</p>
+              <a href="#productos" class="btn btn-primary">Explorar Telas</a>
+            </div>
+            <div class="hero-img">
+              <img src="https://acdn-us.mitiendanube.com/stores/001/218/934/products/61880508-1cd3-493d-a611-9d549cc0e472-2a48f01365fc967f6f17678912404963-480-0.webp" alt="Telas">
+            </div>
+          </div>
+        </div>
+        <div class="slide">
+          <div class="hero-inner">
+            <div class="hero-content">
+              <p style="text-transform: uppercase; letter-spacing: 0.2em; font-size: 14px; margin-bottom: 16px; color: #aaa;">Ofertas Limitadas</p>
+              <h1>Hasta <span>30% OFF</span></h1>
+              <p>Aprovecha nuestros descuentos en calzado y accesorios seleccionados.</p>
+              <a href="#productos" class="btn btn-primary">Ver Ofertas</a>
+            </div>
+            <div class="hero-img">
+              <img src="https://acdn-us.mitiendanube.com/stores/005/133/153/products/portada-galeria-web-2026-27-d1301668d7d2e0b0da17781681556820-480-0.webp" alt="Ofertas">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-nav">
+        <div class="carousel-dot active" onclick="goToSlide(0)"></div>
+        <div class="carousel-dot" onclick="goToSlide(1)"></div>
+        <div class="carousel-dot" onclick="goToSlide(2)"></div>
+      </div>
+      <div class="carousel-arrows">
+        <div class="carousel-arrow" onclick="prevSlide()">❮</div>
+        <div class="carousel-arrow" onclick="nextSlide()">❯</div>
+      </div>
+    </section>
+
+<section style="padding: 80px 40px; text-align: center; position: relative; overflow: hidden;">
+      <video autoplay muted loop playsInline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;">
+        <source src="../tienda-portafolio/assetscros/coverr-picking-out-a-shirt-5219-1080p.mp4" type="video/mp4">
+      </video>
+      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(20,18,16,0.85) 0%, rgba(40,35,25,0.8) 100%); z-index: 1;"></div>
+      <div style="position: relative; z-index: 2; max-width: 800px; margin: 0 auto;">
+        <p style="color: #B8860B; font-size: 14px; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 20px; font-weight: 600;">VENTA MAYORISTA</p>
+        <h2 style="color: white; font-size: clamp(32px, 5vw, 48px); margin-bottom: 24px; font-weight: 700; line-height: 1.2;">¿QUERÉS COMPRAR AL POR MAYOR?</h2>
+        <p style="color: rgba(255,255,255,0.7); font-size: 18px; max-width: 600px; margin: 0 auto 40px auto; line-height: 1.8;">
+          Somos distribuidores mayoristas de telas de la mejor calidad. Trabajamos con precios exclusivos para retail y negocios de confección. Encontrá la mejor relación precio-calidad del mercado.
+        </p>
+        <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 40px; flex-wrap: wrap;">
+          <div style="text-align: center; color: white;">
+            <div style="font-size: 36px; margin-bottom: 8px;">📦</div>
+            <div style="font-size: 14px; color: rgba(255,255,255,0.6);">ENVÍOS A TODO EL PAÍS</div>
+          </div>
+          <div style="text-align: center; color: white;">
+            <div style="font-size: 36px; margin-bottom: 8px;">💎</div>
+            <div style="font-size: 14px; color: rgba(255,255,255,0.6);">CALIDAD PREMIUM</div>
+          </div>
+          <div style="text-align: center; color: white;">
+            <div style="font-size: 36px; margin-bottom: 8px;">💰</div>
+            <div style="font-size: 14px; color: rgba(255,255,255,0.6);">PRECIOS EXCLUSIVOS</div>
+          </div>
+        </div>
+        <a href="#contacto" class="cta-btn" style="display: inline-block; background: linear-gradient(135deg, #B8860B 0%, #D4AF37 100%); color: white; padding: 18px 50px; border-radius: 50px; font-size: 16px; font-weight: 600; text-decoration: none; letter-spacing: 1px; box-shadow: 0 8px 30px rgba(184,134,11,0.4);">CONTACTANOS</a>
+      </div>
+    </section>
+    <style>{`
+      .cta-btn { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+      .cta-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 15px 40px rgba(184,134,11,0.5); }
+    `}</style>
+
+    <section id="categorias" style="background: #1C1917; padding: 16px 0 0 0;">
+      <h2 style="color: white; text-align: center; font-size: 28px; font-weight: 600; letter-spacing: 3px; margin: 0 0 16px 0; padding: 0;">CATEGORÍAS</h2>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px;">
+        <a href="#productos" class="cat-btn" style="position: relative; display: flex; align-items: center; justify-content: center; text-decoration: none; overflow: hidden; height: 180px;">
+          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80" style="position: absolute; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s;" alt="">
+          <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.5); transition: background 0.3s;"></div>
+          <div style="position: relative; z-index: 2; text-align: center; color: white;">
+            <div style="font-size: 48px; margin-bottom: 8px;">👟</div>
+            <div style="font-size: 18px; font-weight: 700; letter-spacing: 2px;">CALZADO</div>
+          </div>
+        </a>
+        <a href="#productos" class="cat-btn" style="position: relative; display: flex; align-items: center; justify-content: center; text-decoration: none; overflow: hidden; height: 180px;">
+          <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&q=80" style="position: absolute; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s;" alt="">
+          <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.5); transition: background 0.3s;"></div>
+          <div style="position: relative; z-index: 2; text-align: center; color: white;">
+            <div style="font-size: 48px; margin-bottom: 8px;">👕</div>
+            <div style="font-size: 18px; font-weight: 700; letter-spacing: 2px;">REMERAS</div>
+          </div>
+        </a>
+        <a href="#productos" class="cat-btn" style="position: relative; display: flex; align-items: center; justify-content: center; text-decoration: none; overflow: hidden; height: 180px;">
+          <img src="https://images.unsplash.com/photo-1558171813-4c088753af8f?w=800&q=80" style="position: absolute; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s;" alt="">
+          <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.5); transition: background 0.3s;"></div>
+          <div style="position: relative; z-index: 2; text-align: center; color: white;">
+            <div style="font-size: 48px; margin-bottom: 8px;">🧶</div>
+            <div style="font-size: 18px; font-weight: 700; letter-spacing: 2px;">TELAS</div>
+          </div>
+        </a>
+        <a href="#productos" class="cat-btn" style="position: relative; display: flex; align-items: center; justify-content: center; text-decoration: none; overflow: hidden; height: 180px;">
+          <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80" style="position: absolute; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s;" alt="">
+          <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.5); transition: background 0.3s;"></div>
+          <div style="position: relative; z-index: 2; text-align: center; color: white;">
+            <div style="font-size: 48px; margin-bottom: 8px;">🏠</div>
+            <div style="font-size: 18px; font-weight: 700; letter-spacing: 2px;">HOGAR</div>
+          </div>
+        </a>
+      </div>
+    </section>
+    <style>{`
+      .cat-btn { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+      .cat-btn:hover img { transform: scale(1.15); }
+      .cat-btn:hover div:first-of-type { background: rgba(184,134,11,0.4); }
+      .cat-btn:hover div:last-of-type div:first-of-type { transform: scale(1.2); }
+      .cat-btn:hover div:last-of-type div:last-of-type { text-shadow: 0 0 20px rgba(255,255,255,0.5); }
+      
+      .about-card { cursor: default; }
+      .about-card:hover { transform: translateY(-15px) rotate(2deg); box-shadow: 0 30px 60px rgba(0,0,0,0.25); }
+      .contact-card:hover { transform: translateY(-12px) scale(1.02); box-shadow: 0 30px 60px rgba(0,0,0,0.3); }
+      @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(5deg); } }
+      @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    `}</style>
+
+    <section id="productos" class="section" style="background: white;">
+      <div class="section-title animate">
+        <h2>Productos Destacados</h2>
+        <p>Los más elegidos por nuestros clientes</p>
+      </div>
+      <div class="products-grid" id="productsGrid"></div>
+    </section>
+
+    <section id="contacto" style="background: linear-gradient(135deg, #2D3436 0%, #636E72 100%); padding: 100px 40px; position: relative; overflow: hidden;">
+      <div style="position: absolute; top: 20%; right: 10%; width: 100px; height: 100px; background: rgba(255,255,255,0.05); border-radius: 50%; animation: float 4s ease-in-out infinite;"></div>
+      <div style="position: absolute; bottom: 20%; left: 5%; width: 80px; height: 80px; background: rgba(255,255,255,0.05); border-radius: 50%; animation: float 5s ease-in-out infinite reverse;"></div>
+      <div style="max-width: 1000px; margin: 0 auto; position: relative; z-index: 1;">
+        <div style="text-align: center; margin-bottom: 60px;">
+          <h2 style="color: white; font-size: clamp(32px, 5vw, 48px); font-weight: 700; margin-bottom: 16px;">ESTAMOS PARA AYUDARTE</h2>
+          <p style="color: rgba(255,255,255,0.7); font-size: 18px; max-width: 500px; margin: 0 auto;">Visitanos o contactanos para más información</p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+          <div style="background: white; padding: 40px 30px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;" class="contact-card">
+            <div style="font-size: 48px; margin-bottom: 16px;">📞</div>
+            <h3 style="color: #333; margin-bottom: 12px; font-size: 20px; font-weight: 700;">Teléfono</h3>
+            <p style="color: #666; font-size: 16px;">+54 9 11 2345-6789</p>
+          </div>
+          <div style="background: white; padding: 40px 30px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;" class="contact-card">
+            <div style="font-size: 48px; margin-bottom: 16px;">✉️</div>
+            <h3 style="color: #333; margin-bottom: 12px; font-size: 20px; font-weight: 700;">Email</h3>
+            <p style="color: #666; font-size: 16px;">contacto@textilstore.com</p>
+          </div>
+          <div style="background: white; padding: 40px 30px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;" class="contact-card">
+            <div style="font-size: 48px; margin-bottom: 16px;">📍</div>
+            <h3 style="color: #333; margin-bottom: 12px; font-size: 20px; font-weight: 700;">Ubicación</h3>
+            <p style="color: #666; font-size: 16px;">Av. Principal 1234, Buenos Aires</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h3 style="font-size: 24px; margin-bottom: 20px;">TEXTIL<span>STORE</span></h3>
+        <p style="color: #888; font-size: 14px; line-height: 1.8;">Tu destino confiable para moda y textiles de calidad.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navegación</h4>
+        <ul>
+          <li><a href="#productos">Productos</a></li>
+          <li><a href="#nosotros">Nosotros</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Categorías</h4>
+        <ul>
+          <li><a href="#">Calzado</a></li>
+          <li><a href="#">Remeras</a></li>
+          <li><a href="#">Telas</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <ul>
+          <li>+54 9 11 2345-6789</li>
+          <li>contacto@textilstore.com</li>
+          <li>@textilstore</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2026 TextilStore. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <h2>Carrito (<span id="cartCount2">0</span>)</h2>
+      <button onclick="toggleCart()" style="background: none; border: none; cursor: pointer;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <p style="text-align: center; color: var(--muted); padding: 40px;">El carrito está vacío</p>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display: none;">
+      <div class="cart-total">
+        <span>Total</span>
+        <strong id="cartTotal">$0</strong>
+      </div>
+      <button class="btn btn-primary" style="width: 100%;">Finalizar Compra</button>
+      <p style="text-align: center; color: var(--muted); font-size: 12px; margin-top: 12px;">Simulación - Sin pago real</p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Producto agregado al carrito</div>
+
+  <div class="modal" id="productModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Detalle del Producto</h2>
+        <button onclick="closeModal()" style="background: none; border: none; cursor: pointer;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const totalSlides = slides.length;
+
+    function showSlide(index) {
+      slides.forEach(s => s.classList.remove('active'));
+      dots.forEach(d => d.classList.remove('active'));
+      slides[index].classList.add('active');
+      dots[index].classList.add('active');
+      currentSlide = index;
+    }
+
+    function nextSlide() {
+      showSlide((currentSlide + 1) % totalSlides);
+    }
+
+    function prevSlide() {
+      showSlide((currentSlide - 1 + totalSlides) % totalSlides);
+    }
+
+    function goToSlide(index) {
+      showSlide(index);
+    }
+
+    setInterval(nextSlide, 5000);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prevSlide();
+      if (e.key === 'ArrowRight') nextSlide();
+    });
+
+    const products = [
+      { id: 1, name: "Pack Premium Sastrero", price: 139990, originalPrice: 174990, category: "Packs", image: "https://acdn-us.mitiendanube.com/stores/005/133/153/products/hero1-e7f67c14c6824a43bd17777327393130-480-0.webp", desc: "Pack completo de prendas sastreras de alta calidad.", colors: ["Negro", "Gris", "Azul Marino"], sizes: ["38", "40", "42", "44"] },
+      { id: 2, name: "MOCASÍN CLOG GAMUZA", price: 136900, originalPrice: 169900, category: "Calzado", image: "https://acdn-us.mitiendanube.com/stores/005/133/153/products/portada-galeria-web-2026-27-d1301668d7d2e0b0da17781681556820-480-0.webp", desc: "Mocasín Clog de gamuza premium. Diseño cómodo y elegante.", colors: ["Coco", "Marrón", "Chocolate"], sizes: ["39", "40", "41", "42", "43"] },
+      { id: 3, name: "ZUECOS BIRKEN MONACO", price: 129990, originalPrice: 189900, category: "Calzado", image: "https://acdn-us.mitiendanube.com/stores/005/133/153/products/recreate_the_exact_studio_product_202605071240-5a0f0979e72bae339317781684759892-480-0.webp", desc: "Zuecos Birken Monaco - Estilo clásico y comodidad excepcional.", colors: ["Marrón"], sizes: ["39", "40", "41", "42", "43", "44", "45"] },
+      { id: 4, name: "SET x2 REMERA SLIM FIT", price: 89900, originalPrice: 99800, category: "Remeras", image: "https://d1a9qnv764bsoo.cloudfront.net/stores/005/133/153/rte/1.png", desc: "Set de 2 remeras Slim Fit de algodón premium.", colors: ["Negro", "Blanco"], sizes: ["S", "M", "L", "XL"] },
+      { id: 5, name: "CORDERITO SOFT BIFAZ", price: 6950, category: "Telas", image: "https://acdn-us.mitiendanube.com/stores/001/218/934/products/18a48aa5-7929-43d5-a5ea-b2e3439eac61-871a2c33d2c8578a9f17727458064387-480-0.webp", desc: "Tejido de punto doble cara, ideal para mantas y abrigos.", colors: ["Off White", "Rosa Palido", "Latte"], sizes: null },
+      { id: 6, name: "PLUSH BIFAZ", price: 7415, category: "Telas", image: "https://acdn-us.mitiendanube.com/stores/001/218/934/products/61880508-1cd3-493d-a611-9d549cc0e472-2a48f01365fc967f6f17678912404963-480-0.webp", desc: "Plush bifaz aterciopelado, ideal para bebés y mantas.", colors: ["Verde Botella", "Negro", "Rosa Palido"], sizes: null },
+      { id: 7, name: "CORDEROY", price: 9295, category: "Telas", image: "https://acdn-us.mitiendanube.com/stores/001/218/934/products/4167e864-6d2e-4e49-b029-5553c4780aca-3a5718b1d8f206ee5b17678915300665-480-0.webp", desc: "Corderoy 8 bastas ideal para pantalones y faldas.", colors: ["Frambuesa", "Negro", "Vison"], sizes: null },
+      { id: 8, name: "POLAR SOFT", price: 6800, category: "Telas", image: "https://acdn-us.mitiendanube.com/stores/001/218/934/products/975accf9-377f-4113-bf63-e46ddb14382c-1408417490e255733d17708267816103-480-0.webp", desc: "Tejido coral fleece doble cara, suave y abrigado.", colors: ["Rosa Palido", "Negro", "True Navy"], sizes: null },
+    ];
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Scroll Reveal Animation
+    function initScrollReveal() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+      document.querySelectorAll('.product-card, .cat-card, .info-card, .footer-col').forEach(el => {
+        observer.observe(el);
+      });
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = products.map((p, i) => {
+        const discount = p.originalPrice ? Math.round((p.originalPrice - p.price) / p.originalPrice * 100) : 0;
+        return `
+          <div class="product-card" style="transition-delay: ${i * 0.1}s" onclick="openProduct(${p.id})">
+            <div style="position: relative;">
+              <img src="${p.image}" alt="${p.name}">
+              ${discount > 0 ? `<span class="discount">-${discount}% OFF</span>` : ''}
+            </div>
+            <div class="product-info">
+              <p class="product-cat">${p.category}</p>
+              <h3 class="product-name">${p.name}</h3>
+              <p class="product-price">$${p.price.toLocaleString('es-AR')}${p.originalPrice ? `<span class="product-price-old">$${p.originalPrice.toLocaleString('es-AR')}</span>` : ''}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openProduct(id) {
+      const p = products.find(x => x.id === id);
+      const modal = document.getElementById('productModal');
+      const body = document.getElementById('modalBody');
+      
+      body.innerHTML = `
+        <div class="modal-img"><img src="${p.image}" alt="${p.name}"></div>
+        <div class="modal-details">
+          <p style="color: var(--muted); text-transform: uppercase; font-size: 12px; margin-bottom: 8px;">${p.category}</p>
+          <h1>${p.name}</h1>
+          <p class="modal-price">$${p.price.toLocaleString('es-AR')}${p.originalPrice ? `<span style="font-size: 16px; color: var(--muted); text-decoration: line-through; margin-left: 10px;">$${p.originalPrice.toLocaleString('es-AR')}</span>` : ''}</p>
+          <p class="modal-desc">${p.desc}</p>
+          ${p.colors ? `<div class="color-options"><label>Color: <span id="selectedColor">${p.colors[0]}</span></label><div class="color-btns">${p.colors.map(c => `<button class="color-btn ${c === p.colors[0] ? 'selected' : ''}" style="background: ${getColorHex(c)}" onclick="selectColor('${c}', this)"></button>`).join('')}</div></div>` : ''}
+          ${p.sizes ? `<div class="size-options"><label>Talle: <span id="selectedSize">${p.sizes[0]}</span></label><div class="size-btns">${p.sizes.map(s => `<button class="size-btn ${s === p.sizes[0] ? 'selected' : ''}" onclick="selectSize('${s}', this)">${s}</button>`).join('')}</div></div>` : ''}
+          <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="addToCart(${p.id})">Agregar al Carrito</button>
+        </div>
+      `;
+      modal.classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('productModal').classList.remove('open');
+    }
+
+    function selectColor(color, btn) {
+      document.getElementById('selectedColor').textContent = color;
+      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    }
+
+    function selectSize(size, btn) {
+      document.getElementById('selectedSize').textContent = size;
+      document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    }
+
+    function getColorHex(colorName) {
+      const colors = { 'Negro': '#1A1A1A', 'Blanco': '#FFFFFF', 'Gris': '#888888', 'Azul Marino': '#1A3A5C', 'Coco': '#C4A77D', 'Marrón': '#8B4513', 'Rosa Palido': '#FFD1DC', 'Off White': '#FAF9F6', 'Latte': '#C8A685', 'Verde Botella': '#228B22', 'Vison': '#BFA98A', 'True Navy': '#1A2B4C', 'Frambuesa': '#E91E63' };
+      return colors[colorName] || '#888';
+    }
+
+    function addToCart(id) {
+      const p = products.find(x => x.id === id);
+      const color = document.getElementById('selectedColor')?.textContent || p.colors?.[0] || '';
+      const size = document.getElementById('selectedSize')?.textContent || p.sizes?.[0] || '';
+      const itemId = `${id}-${color}-${size}`;
+      
+      const existing = cart.find(x => x.id === itemId);
+      if (existing) { existing.qty++; } else { cart.push({ id: itemId, product: p, color, size, qty: 1 }); }
+      
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartUI();
+      closeModal();
+      showToast(`"${p.name}" agregado al carrito`);
+    }
+
+    function toggleCart() {
+      document.getElementById('cartSidebar').classList.toggle('open');
+      document.getElementById('cartOverlay').classList.toggle('open');
+    }
+
+    function updateCartUI() {
+      const count = cart.reduce((sum, x) => sum + x.qty, 0);
+      document.getElementById('cartCount').textContent = count;
+      document.getElementById('cartCount2').textContent = count;
+      
+      const items = document.getElementById('cartItems');
+      if (cart.length === 0) {
+        items.innerHTML = '<p style="text-align: center; color: var(--muted); padding: 40px;">El carrito está vacío</p>';
+        document.getElementById('cartFooter').style.display = 'none';
+      } else {
+        items.innerHTML = cart.map(item => `
+          <div class="cart-item">
+            <img src="${item.product.image}" alt="${item.product.name}">
+            <div class="cart-item-info">
+              <p class="cart-item-name">${item.product.name}</p>
+              <p class="cart-item-options">${item.color}${item.size ? ' / ' + item.size : ''}</p>
+              <div class="cart-item-controls">
+                <button class="qty-btn" onclick="updateQty('${item.id}', -1)">-</button>
+                <span>${item.qty}</span>
+                <button class="qty-btn" onclick="updateQty('${item.id}', 1)">+</button>
+              </div>
+            </div>
+            <span style="font-weight: 600;">$${(item.product.price * item.qty).toLocaleString('es-AR')}</span>
+            <button onclick="removeItem('${item.id}')" style="background: none; border: none; color: var(--muted); cursor: pointer;">✕</button>
+          </div>
+        `).join('');
+        
+        const total = cart.reduce((sum, x) => sum + x.product.price * x.qty, 0);
+        document.getElementById('cartTotal').textContent = '$' + total.toLocaleString('es-AR');
+        document.getElementById('cartFooter').style.display = 'block';
+      }
+    }
+
+    function updateQty(itemId, delta) {
+      const item = cart.find(x => x.id === itemId);
+      if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) { cart = cart.filter(x => x.id !== itemId); }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartUI();
+      }
+    }
+
+    function removeItem(itemId) {
+      cart = cart.filter(x => x.id !== itemId);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    renderProducts();
+    updateCartUI();
+    initScrollReveal();
+
+    // Additional scroll animations for sections
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('.scroll-reveal, .section > div');
+      sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.85) {
+          section.style.opacity = '1';
+          section.style.transform = 'translateY(0)';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

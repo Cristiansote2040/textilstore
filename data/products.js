@@ -1,0 +1,233 @@
+export const products = [
+  {
+    id: 1,
+    name: "Pack Premium Sastrero",
+    price: 139990,
+    originalPrice: 174990,
+    category: "packs",
+    image: "https://acdn-us.mitiendanube.com/stores/005/133/153/products/hero1-e7f67c14c6824a43bd17777327393130-480-0.webp",
+    description: "Pack Premium Sastrero - Pack completo de prendas sastreras de alta calidad. Incluye pantalón de vestir de tela premium con corte moderno.",
+    colors: ["Negro", "Gris", "Azul Marino"],
+    sizes: ["38", "40", "42", "44", "46", "48"],
+    inStock: false,
+    store: "starconcept"
+  },
+  {
+    id: 2,
+    name: "Pack Premium Sastrero 3",
+    price: 277990,
+    originalPrice: 347490,
+    category: "packs",
+    image: "https://acdn-us.mitiendanube.com/stores/005/133/153/products/hero2-7030e365675bd3e99f17779112104246-480-0.webp",
+    description: "Pack Premium Sastrero 3 - Pack completo con 3 prendas sastreras de tela premium. Incluye pantalón, camisa y cinturón.",
+    colors: ["Negro", "Gris", "Azul"],
+    sizes: ["38", "40", "42", "44", "46", "48"],
+    inStock: false,
+    store: "starconcept"
+  },
+  {
+    id: 3,
+    name: "MOCASÍN CLOG GAMUZA",
+    price: 136900,
+    originalPrice: 169900,
+    category: "calzado",
+    image: "https://acdn-us.mitiendanube.com/stores/005/133/153/products/portada-galeria-web-2026-27-d1301668d7d2e0b0da17781681556820-480-0.webp",
+    description: "Mocasín Clog de gamuza premium. Diseño cómodo y elegante para cualquier ocasión. Disponible en varios colores.",
+    colors: ["Coco", "Marrón", "Chocolate"],
+    sizes: ["39", "40", "41", "42", "43", "44", "45"],
+    inStock: true,
+    store: "starconcept"
+  },
+  {
+    id: 4,
+    name: "ZUECOS BIRKEN MONACO",
+    price: 129990,
+    originalPrice: 189900,
+    category: "calzado",
+    image: "https://acdn-us.mitiendanube.com/stores/005/133/153/products/recreate_the_exact_studio_product_202605071240-5a0f0979e72bae339317781684759892-480-0.webp",
+    description: "Zuecos Birken Monaco - Estilo clásico y comodidad excepcional. Plantilla anatómica premium.",
+    colors: ["Marrón Coco", "Marrón Chocolate"],
+    sizes: ["39", "40", "41", "42", "43", "44", "45"],
+    inStock: true,
+    store: "starconcept"
+  },
+  {
+    id: 5,
+    name: "SET x2 REMERA SLIM FIT",
+    price: 89900,
+    originalPrice: 99800,
+    category: "remeras",
+    image: "https://d1a9qnv764bsoo.cloudfront.net/stores/005/133/153/rte/1.png",
+    description: "Set de 2 remeras Slim Fit de algodón premium. Corte moderno y ajuste perfecto.",
+    colors: ["Negro", "Blanco"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    store: "starconcept"
+  },
+  {
+    id: 6,
+    name: "CORDERITO SOFT BIFAZ",
+    price: 6950,
+    originalPrice: null,
+    category: "telas-punto",
+    image: "https://acdn-us.mitiendanube.com/stores/001/218/934/products/18a48aa5-7929-43d5-a5ea-b2e3439eac61-871a2c33d2c8578a9f17727458064387-480-0.webp",
+    description: "Corderito Soft Bifaz - Tejido de punto doble cara, ideal para mantas, abrigos y decoración. Suave y abrigado.",
+    colors: ["Off White", "Manteca", "Rosa Palido", "Obispo", "Latte", "Turtle"],
+    sizes: null,
+    inStock: true,
+    store: "zittana"
+  },
+  {
+    id: 7,
+    name: "PLUSH BIFAZ",
+    price: 7415,
+    originalPrice: null,
+    category: "telas-punto",
+    image: "https://acdn-us.mitiendanube.com/stores/001/218/934/products/61880508-1cd3-493d-a611-9d549cc0e472-2a48f01365fc967f6f17678912404963-480-0.webp",
+    description: "Plush Bifaz aterciopelado, ideal para ropa de bebés, niños y mantas. Confort supreme.",
+    colors: ["Verde Botella", "Negro", "Off White", "Rosa Palido", "Gris Perla"],
+    sizes: null,
+    inStock: true,
+    store: "zittana"
+  },
+  {
+    id: 8,
+    name: "CORDEROY",
+    price: 9295,
+    originalPrice: null,
+    category: "telas-planas",
+    image: "https://acdn-us.mitiendanube.com/stores/001/218/934/products/4167e864-6d2e-4e49-b029-5553c4780aca-3a5718b1d8f206ee5b17678915300665-480-0.webp",
+    description: "Corderoy 8 bastas - Tela rígida y suave ideal para pantalones, faldas y abrigos. Estilo clásico.",
+    colors: ["Frambuesa", "Negro", "Amatista", "Beige Claro", "Vison", "Lacre", "Verde Musgo"],
+    sizes: null,
+    inStock: true,
+    store: "zittana"
+  },
+  {
+    id: 9,
+    name: "PIEL SINTÉTICA CONEJO",
+    price: 13295,
+    originalPrice: null,
+    category: "telas-punto",
+    image: "https://acdn-us.mitiendanube.com/stores/001/218/934/products/ec753a4b-d6a9-46be-a28e-ab6c373f9b18-16f2bfdc9c6a4e8ccc17679082489836-480-0.webp",
+    description: "Piel sintética conejo con pelo corto. Ideal para prendas, accesorios y decoración.",
+    colors: ["Negro", "Natural"],
+    sizes: null,
+    inStock: true,
+    store: "zittana"
+  },
+  {
+    id: 10,
+    name: "DARLON",
+    price: 7950,
+    originalPrice: null,
+    category: "telas-punto",
+    image: "https://acdn-us.mitiendanube.com/stores/001/218/934/products/e5c3827c-d4d3-4449-8d46-d94e442dc51e-a108fbadca5296159317720406260968-480-0.webp",
+    description: "Darlon - Tejido aterciopelado, cálido y con excelente rebote. Ideal para ropa de invierno y media estación.",
+    colors: ["Light Pink", "Oliva", "Magenta", "Ginger", "Amarillo Pastel", "Latte", "True Navy", "Manteca"],
+    sizes: null,
+    inStock: true,
+    store: "zittana"
+  },
+  {
+    id: 11,
+    name: "POLAR SOFT",
+    price: 6800,
+    originalPrice: null,
+    category: "telas-punto",
+    image: "https://acdn-us.mitiendanube.com/stores/001/218/934/products/975accf9-377f-4113-bf63-e46ddb14382c-1408417490e255733d17708267816103-480-0.webp",
+    description: "Polar Soft - Tejido coral fleece doble cara. Suave y abrigado, ideal para mantas, buzos y decoración.",
+    colors: ["Rosa Palido", "Obispo", "Negro", "Volcan", "Deep Lake", "True Navy", "Brush", "Natural"],
+    sizes: null,
+    inStock: true,
+    store: "zittana"
+  },
+  {
+    id: 12,
+    name: "MORLEY GAMUZA",
+    price: 4400,
+    originalPrice: null,
+    category: "telas-punto",
+    image: "https://acdn-us.mitiendanube.com/stores/001/218/934/products/f3315119-816e-4a39-b29c-f1d489a7f93e-fae39ab88a9d43db6317703253571746-480-0.webp",
+    description: "Morley Gamuza - Tela gamuzada y elástica ideal para remeras, buzos y vestidos. Confort y estilo.",
+    colors: ["Rosa Nostalgic", "Oliva", "Orchid", "Ocre Oscuro", "Azalea", "Green Leaves", "Brush"],
+    sizes: null,
+    inStock: true,
+    store: "zittana"
+  },
+  {
+    id: 13,
+    name: "Juego de Cortinas Blackout Vinilico",
+    price: 22990,
+    originalPrice: null,
+    category: "hogar",
+    image: "https://i0.wp.com/rapitelas.com/wp-content/uploads/2026/04/CORTINA-BLACKOUT-PERLA.jpeg?resize=300%2C300&ssl=1",
+    description: "Juego de Cortinas Blackout Vinilico (2 paños 1,35x2,10). Protección total contra luz y ruido.",
+    colors: ["Perla", "Beige", "Negro", "Blanco"],
+    sizes: null,
+    inStock: true,
+    store: "rapitelas"
+  },
+  {
+    id: 14,
+    name: "Mantel Cuerina Lino Crudo 2.00",
+    price: 13990,
+    originalPrice: null,
+    category: "hogar",
+    image: "https://i0.wp.com/rapitelas.com/wp-content/uploads/2026/02/CUERINA-LINO00005.jpg?resize=300%2C300&ssl=1",
+    description: "Mantel de Cuerina efecto Lino Crudo. Medida 2.00. Resistente y elegante para tu hogar.",
+    colors: ["Crudo"],
+    sizes: null,
+    inStock: true,
+    store: "rapitelas"
+  },
+  {
+    id: 15,
+    name: "Juego de Cortinas c/Presilla Tropical",
+    price: 13490,
+    originalPrice: null,
+    category: "hogar",
+    image: "https://i0.wp.com/rapitelas.com/wp-content/uploads/2023/02/cortina-tropical.webp?resize=300%2C300&ssl=1",
+    description: "Juego de Cortinas con Presilla Tropical (2 Paños). Diseño moderno y fresco.",
+    colors: ["Estampado Tropical"],
+    sizes: null,
+    inStock: true,
+    store: "rapitelas"
+  },
+  {
+    id: 16,
+    name: "Repasador Toalla Corazones Surtido",
+    price: 1490,
+    originalPrice: 1790,
+    category: "blanueria",
+    image: "https://i0.wp.com/rapitelas.com/wp-content/uploads/2022/07/D_NQ_NP_2X_894807-MLA82275334192_022025-F.webp?resize=300%2C300&ssl=1",
+    description: "Repasador Toalla con Estampado Corazones Surtido (x 12u). Pack mayorista.",
+    colors: ["Surtido"],
+    sizes: null,
+    inStock: true,
+    store: "rapitelas"
+  }
+];
+
+export const categories = [
+  { id: "todos", name: "Todos", icon: "◆" },
+  { id: "calzado", name: "Calzado", icon: "👟" },
+  { id: "remeras", name: "Remeras", icon: "👕" },
+  { id: "packs", name: "Packs", icon: "📦" },
+  { id: "telas-punto", name: "Telas de Punto", icon: "🧶" },
+  { id: "telas-planas", name: "Telas Planas", icon: "📐" },
+  { id: "hogar", name: "Hogar", icon: "🏠" },
+  { id: "blanueria", name: "Blanuería", icon: "🛏️" }
+];
+
+export const storeInfo = {
+  name: "Textil Store",
+  tagline: "Moda y Textiles de Calidad",
+  phone: "+54 9 11 2345-6789",
+  email: "contacto@textilstore.com",
+  address: "Av. Principal 1234, Buenos Aires, Argentina",
+  social: {
+    instagram: "@textilstore",
+    facebook: "textilstore"
+  }
+};
