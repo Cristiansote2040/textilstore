@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
 import { products, categories } from '@/data/products';
 
-export default function ProductosPage() {
+function ProductosContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get('category') || 'todos';
 
@@ -148,7 +148,15 @@ export default function ProductosPage() {
             grid-template-columns: 1fr !important;
           }
         }
-      `}</style>
+        `}</style>
     </div>
+  );
+}
+
+export default function ProductosPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: '#888' }}>Cargando...</div>}>
+      <ProductosContent />
+    </Suspense>
   );
 }
