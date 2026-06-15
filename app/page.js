@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { products, categories } from '@/data/products';
+import ProductCard from '@/components/ProductCard';
 
 const slides = [
   {
